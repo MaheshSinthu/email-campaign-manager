@@ -7,6 +7,7 @@ This guide will help you set up and run the Email Campaign Management system.
 ### 1. Clone the Repository
 
 2. Create and Activate Virtual Environment
+cd backend
 python -m venv venv
 venv\Scripts\activate
 For Linux/macOS:
@@ -14,7 +15,6 @@ python3 -m venv venv
 source venv/bin/activate
 
 3. Install Backend Dependencies
-cd backend
 pip install -r requirements.txt
 
 4. Configure Environment Variables
