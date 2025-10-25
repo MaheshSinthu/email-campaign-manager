@@ -15,3 +15,7 @@ export const getCampaignLogs = (id) =>
   axios.get(`${API_BASE_URL}/campaigns/${id}/logs/`);
 
 export const startCampaign = (id) => axios.post(`${API_BASE_URL}/campaigns/${id}/start/`);
+
+export const pauseCampaign = (id) => axios.post(`${API_BASE_URL}/campaigns/${id}/pause/`);
+export const resumeCampaign = (id) => axios.post(`${API_BASE_URL}/campaigns/${id}/resume/`);
+export const cancelCampaign = (id) => axios.post(`${API_BASE_URL}/campaigns/${id}/cancel/`);

@@ -4,7 +4,7 @@ import CampaignList from "./components/CampaignList";
 import CampaignCreate from "./components/CampaignCreate";
 import RecipientUpload from "./components/RecipientUpload";
 import CampaignLogs from "./components/CampaignLogs";
-
+import RecipientList from "./components/RecipientList";
 function App() {
   const navStyle = {
     backgroundColor: "#2563eb",
@@ -28,12 +28,14 @@ function App() {
           <CustomNavLink to="/" text="Campaigns" />
           <CustomNavLink to="/create" text="Create Campaign" />
           <CustomNavLink to="/recipients" text="Upload Recipients" />
+          <CustomNavLink to="/recipients-list" text="View Recipients" />
         </nav>
 
         <Routes>
           <Route path="/" element={<CampaignList />} />
           <Route path="/create" element={<CampaignCreate />} />
           <Route path="/recipients" element={<RecipientUpload />} />
+          <Route path="/recipients-list" element={<RecipientList />} />
           <Route path="/campaign/:id/logs" element={<CampaignLogs />} />
         </Routes>
       </div>

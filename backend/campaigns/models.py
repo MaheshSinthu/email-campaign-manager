@@ -17,6 +17,8 @@ class Campaign(models.Model):
         ('IN_PROGRESS', 'In Progress'),
         ('COMPLETED', 'Completed'),
         ('FAILED', 'Failed'),
+        ('CANCELLED', 'Cancelled'),
+        ('PAUSED', 'Paused'),
     )
     name = models.CharField(max_length=255)
     subject_line = models.CharField(max_length=255)

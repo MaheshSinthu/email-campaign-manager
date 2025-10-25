@@ -93,8 +93,6 @@ def generate_and_send_report(campaign_id):
             recipient_list=[admin_email],
             fail_silently=False
         )
-        # attach via EmailMessage if you want attachments (skipped for brevity)
-    # mark completed if all done
     campaign.refresh_from_db()
     if campaign.sent_count + campaign.failed_count >= campaign.total_recipients:
         campaign.status = 'COMPLETED'

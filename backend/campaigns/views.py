@@ -7,6 +7,7 @@ from .serializers import CampaignSerializer, RecipientSerializer, EmailDeliveryL
 from .utils import parse_csv, parse_excel, validate_and_clean_rows
 from .tasks import start_campaign
 from django.db import IntegrityError, transaction
+from rest_framework import generics
 
 class CampaignListCreateAPIView(APIView):
     permission_classes = [permissions.AllowAny]
@@ -99,3 +100,66 @@ class CampaignDeliveryLogAPIView(APIView):
         logs = campaign.delivery_logs.select_related('recipient').all().order_by('-sent_at')
         serializer = EmailDeliveryLogSerializer(logs, many=True)
         return Response(serializer.data)
+class RecipientListAPIView(generics.ListAPIView):
+    queryset = Recipient.objects.all().order_by('-created_at')
+    serializer_class = RecipientSerializer
+    
+class PauseCampaignAPIView(APIView):
+    def post(self, request, pk):
+        try:
+            campaign = Campaign.objects.get(pk=pk)
+            if campaign.status == "SCHEDULED":
+                campaign.status = "PAUSED"
+                campaign.save()
+                return Response({"detail": "Campaign paused."})
+            return Response({"detail": "Cannot pause this campaign."}, status=status.HTTP_400_BAD_REQUEST)
+        except Campaign.DoesNotExist:
+            return Response({"detail": "Campaign not found."}, status=status.HTTP_404_NOT_FOUND)
+
+class ResumeCampaignAPIView(APIView):
+    def post(self, request, pk):
+        try:
+            campaign = Campaign.objects.get(pk=pk)
+            if campaign.status == "PAUSED":
+                campaign.status = "IN_PROGRESS"
+                campaign.save()
+                return Response({"detail": "Campaign resumed."})
+            return Response({"detail": "Cannot resume this campaign."}, status=status.HTTP_400_BAD_REQUEST)
+        except Campaign.DoesNotExist:
+            return Response({"detail": "Campaign not found."}, status=status.HTTP_404_NOT_FOUND)
+
+class CancelCampaignAPIView(APIView):
+    def post(self, request, pk):
+        try:
+            campaign = Campaign.objects.get(pk=pk)
+            if campaign.status in ["DRAFT", "SCHEDULED", "IN_PROGRESS", "PAUSED"]:
+                campaign.status = "CANCELLED"
+                campaign.save()
+                return Response({"detail": "Campaign cancelled."})
+            return Response({"detail": "Cannot cancel this campaign."}, status=status.HTTP_400_BAD_REQUEST)
+        except Campaign.DoesNotExist:
+            return Response({"detail": "Campaign not found."}, status=status.HTTP_404_NOT_FOUND)
+class ScheduleDraftCampaignAPIView(APIView):
+    """
+    API to change a DRAFT campaign to SCHEDULED.
+    """
+    def post(self, request, pk):
+        try:
+            campaign = Campaign.objects.get(pk=pk)
+            if campaign.status != "DRAFT":
+                return Response(
+                    {"detail": "Only DRAFT campaigns can be scheduled."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            # Optionally, you can allow passing scheduled_time from request.data
+            scheduled_time = request.data.get("scheduled_time")
+            if scheduled_time:
+                campaign.scheduled_time = scheduled_time
+
+            campaign.status = "SCHEDULED"
+            campaign.save()
+            return Response({"detail": "Campaign scheduled successfully."})
+
+        except Campaign.DoesNotExist:
+            return Response({"detail": "Campaign not found."}, status=status.HTTP_404_NOT_FOUND)
