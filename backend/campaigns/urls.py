@@ -4,7 +4,12 @@ from .views import (
     CampaignDetailAPIView,
     StartCampaignAPIView,
     RecipientBulkUploadAPIView,
-    CampaignDeliveryLogAPIView
+    CampaignDeliveryLogAPIView,
+    RecipientListAPIView,
+    PauseCampaignAPIView,
+    ResumeCampaignAPIView,
+    CancelCampaignAPIView,
+    ScheduleDraftCampaignAPIView,
 )
 
 urlpatterns = [
@@ -13,4 +18,9 @@ urlpatterns = [
     path('campaigns/<int:pk>/start/', StartCampaignAPIView.as_view(), name='campaign-start'),
     path('campaigns/<int:pk>/logs/', CampaignDeliveryLogAPIView.as_view(), name='campaign-logs'),
     path('recipients/upload/', RecipientBulkUploadAPIView.as_view(), name='recipients-upload'),
+    path('recipients/', RecipientListAPIView.as_view(), name='recipient-list'),
+    path('campaigns/<int:pk>/pause/', PauseCampaignAPIView.as_view(), name='campaign-pause'),
+    path('campaigns/<int:pk>/resume/', ResumeCampaignAPIView.as_view(), name='campaign-resume'),
+    path('campaigns/<int:pk>/cancel/', CancelCampaignAPIView.as_view(), name='campaign-cancel'),
+    path('campaigns/<int:pk>/schedule/', ScheduleDraftCampaignAPIView.as_view(), name='schedule-campaign'),
 ]
